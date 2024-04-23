@@ -1,5 +1,5 @@
 #pragma once
-#include <Graphics/Model.h>
+#include <Graphics/Mesh/Model.h>
 #include "../PhysicsObject.h"
 
 #define NOMINMAX
@@ -78,6 +78,7 @@ public:
 		{
 			mIsLocked = isLocked;
 			mRadius = radius;
+			mIsColliding = false;
 
 			mCurrentPosition = CalculatePosition(vertex);
 			InitializeVertexPointer(vertex, mCurrentPosition);
@@ -94,6 +95,7 @@ public:
 
 		bool mIsLocked = false;
 		bool mEnabled = true;
+		bool mIsColliding = false;
 		float mRadius = 0;
 
 		glm::vec3 mCurrentPosition = glm::vec3(0);
@@ -144,9 +146,20 @@ public:
 		std::vector<PointerToIndex> mListOfIndices;
 	};
 
-	virtual void UpdateSoftBody(float deltaTime, CRITICAL_SECTION& criticalSection) = 0;
-	virtual void UpdateBufferData() = 0;
 	virtual void InitializeSoftBody() = 0;
+
+	virtual void UpdateSoftBody(float deltaTime, CRITICAL_SECTION& criticalSection);
+	virtual void UpdateNodePosition(float deltaTime);
+	virtual void SatisfyConstraints(float deltaTime);
+	virtual void UpdateModelData(float deltaTime);
+
+	virtual void ApplyCollision(float deltaTime);
+	virtual void UpdateBufferData();
+
+	virtual void UpdateModelVertices() = 0;
+	virtual void UpdateModelNormals() = 0;
+
+	virtual void UpdatePositionByVerlet(float deltaTime);
 
 	virtual void OnPropertyDraw();
 	virtual void Render();
@@ -155,8 +168,11 @@ public:
 	virtual void SetNodeRadius(int index, float radius);
 
 	virtual void DisconnectStick(Stick* stick);
+	bool ShouldApplyGravity(Node* node);
 
 	bool showDebugModels = true;
+	bool clampVelocity = false;
+
 	glm::vec3 mGravity = glm::vec3(0);
 	unsigned int mNumOfIterations = 10;
 
@@ -170,8 +186,12 @@ public:
 
 	std::vector<Node*> mListOfNodes;
 	std::vector<Stick*> mListOfSticks;
+	std::vector<Node*> mListOfNonGravityNodes;
 
 	CollisionMode collisionMode = CollisionMode::SOLID;
+
+	CRITICAL_SECTION* mCriticalSection;
+
 
 protected:
 	void CleanZeros(glm::vec3& value);

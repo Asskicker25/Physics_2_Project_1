@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../FrameBuffer.h"
+#include "../Buffer/FrameBuffer.h"
 #include "../EntityManager/Entity.h"
 
 #include "Bloom.h"

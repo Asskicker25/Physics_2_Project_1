@@ -19,5 +19,8 @@ class SoftBodyApplication : public ApplicationWindow
 
 	PhysicsEngineThreadInfo* physicsThread = nullptr;
 	Scene_One* sceneOne = nullptr;
+
+	// Inherited via ApplicationWindow
+	void OnPlayStateChanged(bool state) override;
 };
 

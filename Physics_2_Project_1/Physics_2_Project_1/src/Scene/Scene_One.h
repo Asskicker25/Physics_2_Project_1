@@ -1,7 +1,7 @@
 #pragma once
 #include <Graphics/Scene/BaseScene.h>
 #include <Graphics/ApplicationWindow.h>
-
+#include <Physics/PhysicsObject.h>
 
 using namespace Scene;
 
@@ -17,10 +17,11 @@ public:
 	void Update() override;
 	void Render() override;
 
+	std::vector<PhysicsObject*> mListOfPhyObjects;
 
 private:
-	GameCamera* mMainCamera = nullptr;
 
+	GameCamera* mMainCamera = nullptr;
 	ApplicationWindow* mWindow = nullptr;
 
 };

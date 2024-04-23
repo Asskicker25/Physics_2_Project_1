@@ -1,6 +1,10 @@
+#include <Graphics/MathUtils.h>
+
 #include "Scene_One.h"
 #include "../AppSettings.h"
-#include <Graphics/MathUtils.h>
+
+#include "../Platforms/StaticPlatforms.h"
+#include "../Player/Player.h"
 
 using namespace MathUtilities;
 
@@ -27,6 +31,10 @@ void Scene_One::Start()
 	dirLight->transform.SetRotation(glm::vec3(10, 40, 0));
 	dirLight->InitializeLight(Directional);
 	dirLight->intensity = 0.6;
+
+
+	StaticPlatforms* staticPlatforms = new StaticPlatforms(this);
+	Player* player = new Player(this);
 }
 
 void Scene_One::Update()

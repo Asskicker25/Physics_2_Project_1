@@ -176,7 +176,6 @@ vec4 CalculateLightContrib(vec3 normal, vec3 fragPos, vec3 viewDir )
 	if(alphaCutOut.y == 1)
 	{
 		result.w = texture(texture_opacity, TexCoord).r;
-		//result.w += 0.05;
 	}
 	else
 	{

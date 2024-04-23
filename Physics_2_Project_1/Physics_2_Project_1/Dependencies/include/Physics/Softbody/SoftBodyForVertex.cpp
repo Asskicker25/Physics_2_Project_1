@@ -74,11 +74,7 @@ namespace Verlet
 
 	void SoftBodyForVertex::UpdateSoftBody(float deltaTine, CRITICAL_SECTION& criticalSection)
 	{
-		mCriticalSection = &criticalSection;
-
-		UpdateNodePosition(deltaTine);
-		SatisfyConstraints(deltaTine);
-		UpdateModelData(deltaTine);
+		BaseSoftBody::UpdateSoftBody(deltaTine,criticalSection);
 	}
 
 	void SoftBodyForVertex::SetupNodes()
@@ -156,101 +152,7 @@ namespace Verlet
 
 	}
 
-	void SoftBodyForVertex::UpdateNodePosition(float deltaTime)
-	{
-		for (Node* node : mListOfNodes)
-		{
-			if (node->mIsLocked) continue;
-
-
-			if (ShouldApplyGravity(node))
-			{
-				node->velocity = mGravity;
-			}
-
-			/*if (node->velocity.x > mNodeMaxVelocity.x) { node->velocity.x = mNodeMaxVelocity.x; }
-			if (node->velocity.y > mNodeMaxVelocity.y) { node->velocity.y = mNodeMaxVelocity.y; }
-			if (node->velocity.z > mNodeMaxVelocity.z) { node->velocity.z = mNodeMaxVelocity.z; }*/
-
-			//node->mCurrentPosition += node->velocity * deltaTime;
-
-			UpdatePositionByVerlet(node, deltaTime);
-		}
-	}
-
-	void SoftBodyForVertex::UpdatePositionByVerlet(Node* node, float deltaTime)
-	{
-		glm::vec3 posBeforUpdate = node->mCurrentPosition;
-
-		node->mCurrentPosition += (posBeforUpdate - node->mOldPositionm) + (node->velocity * (deltaTime * deltaTime));
-		node->mOldPositionm = posBeforUpdate;
-
-		CleanZeros(node->mCurrentPosition);
-		CleanZeros(node->mOldPositionm);
-	}
-
-	void SoftBodyForVertex::SatisfyConstraints(float deltaTime)
-	{
-
-		for (unsigned int i = 0; i < mNumOfIterations; i++)
-		{
-			for (Stick* stick : mListOfSticks)
-			{
-				if (!stick->isConnected) continue;
-
-				Node* nodeA = stick->mNodeA;
-				Node* nodeB = stick->mNodeB;
-
-				glm::vec3 delta = nodeB->mCurrentPosition - nodeA->mCurrentPosition;
-				float length = glm::length(delta);
-
-				float diff = (length - stick->mRestLength) / length;
-
-				if (!nodeA->mIsLocked)
-				{
-					nodeA->mCurrentPosition += delta * 0.5f * diff * mTightness;
-				}
-
-				if (!nodeB->mIsLocked)
-				{
-					nodeB->mCurrentPosition -= delta * 0.5f * diff * mTightness;
-				}
-
-				/*glm::vec3 stickCenter = (nodeA->mCurrentPosition + nodeB->mCurrentPosition) / 2.0f;
-				glm::vec3 stickDir = glm::normalize((nodeA->mCurrentPosition - nodeB->mCurrentPosition));
-
-				if (!nodeA->mIsLocked)
-				{
-					nodeA->mCurrentPosition = stickCenter + stickDir * stick->mRestLength * 0.5f;
-				}
-
-				if (!nodeB->mIsLocked)
-				{
-					nodeB->mCurrentPosition = stickCenter - stickDir * stick->mRestLength * 0.5f;
-				}*/
-
-				CleanZeros(nodeA->mCurrentPosition);
-				CleanZeros(nodeB->mCurrentPosition);
-			}
-		}
-	}
-
-
-	void SoftBodyForVertex::UpdateModelData(float deltaTime)
-	{
-		UpdatModelVertices();
-		UpdateModelNormals();
-	}
-
-	void SoftBodyForVertex::UpdateBufferData()
-	{
-		for (MeshAndMaterial* mesh : meshes)
-		{
-			mesh->mesh->UpdateVertices();
-		}
-	}
-
-	void SoftBodyForVertex::UpdatModelVertices()
+	void SoftBodyForVertex::UpdateModelVertices()
 	{
 		EnterCriticalSection(mCriticalSection);
 
@@ -331,19 +233,6 @@ namespace Verlet
 		}
 
 		return false;
-	}
-
-	bool SoftBodyForVertex::ShouldApplyGravity(Node* node)
-	{
-		for (Node* noGravNode : mListOfNonGravityNodes)
-		{
-			if (node == noGravNode)
-			{
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 

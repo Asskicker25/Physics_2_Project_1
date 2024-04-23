@@ -9,8 +9,8 @@ void SoftBodyApplication::SetUp()
 
 
 	viewportCamera->InitializeCamera(PERSPECTIVE, windowWidth, windowHeight, 0.1f, 500.0f, 45.0f);
-	viewportCamera->transform.SetPosition(glm::vec3(0, 0, 30));
-	viewportCamera->transform.SetRotation(glm::vec3(-15, 0, 0));
+	viewportCamera->transform.SetPosition(glm::vec3(0, 5, 30));
+	viewportCamera->transform.SetRotation(glm::vec3(-20, 0, 0));
 	viewportCamera->applyPostProcessing = true;
 
 	EditorLayout::GetInstance().SetMaximizeState(true);
@@ -44,6 +44,7 @@ void SoftBodyApplication::SetUp()
 
 void SoftBodyApplication::Update()
 {
+	PhysicsEngine::GetInstance().Update(Timer::GetInstance().deltaTime);
 }
 
 void SoftBodyApplication::Render()
@@ -52,6 +53,15 @@ void SoftBodyApplication::Render()
 
 void SoftBodyApplication::Shutdown()
 {
+	if (physicsThread != nullptr)
+	{
+		physicsThread->isAlive = false;
+		WaitForSingleObject(physicsThread->threadHandle, INFINITE);
+		CloseHandle(physicsThread->threadHandle);
+		DeleteCriticalSection(&physicsThread->softBodyUpdateModelData);
+	}
+	delete physicsThread;
+	delete sceneOne;
 }
 
 void SoftBodyApplication::ProcessInput(GLFWwindow* window)
@@ -63,5 +73,9 @@ void SoftBodyApplication::KeyCallBack(GLFWwindow* window, int& key, int& scancod
 }
 
 void SoftBodyApplication::MouseButtonCallback(GLFWwindow* window, int& button, int& action, int& mods)
+{
+}
+
+void SoftBodyApplication::OnPlayStateChanged(bool state)
 {
 }

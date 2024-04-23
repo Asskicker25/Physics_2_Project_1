@@ -15,10 +15,11 @@ namespace Verlet
 		virtual void Render();
 		virtual void OnPropertyDraw();
 
-		void AddForceToRandomNode(glm::vec3 velocity);
 
-		void UpdateModelData(float deltaTime);
-		void UpdateBufferData() override;
+		virtual void UpdateModelVertices();
+		virtual void UpdateModelNormals();
+
+		void AddForceToRandomNode(glm::vec3 velocity);
 
 		void AddStickBetweenNodeIndex(unsigned int nodeA, unsigned int nodeB);
 	
@@ -26,18 +27,9 @@ namespace Verlet
 		void LockNodeAtIndex(int index);
 		void InitializeLockNodes(std::vector<unsigned int> indexToLock);
 
-		CRITICAL_SECTION* mCriticalSection;
-
 	private:
 		void SetupNodes();
 		void SetupSticks();
-
-		void UpdateNodePosition(float deltaTime);
-		void UpdatePositionByVerlet(Node*, float deltaTime);
-		void SatisfyConstraints(float deltaTime);
-
-		void UpdateModelVertices();
-		void UpdateModelNormals();
 
 		bool IsNodeLocked(unsigned int& currentIndex);
 

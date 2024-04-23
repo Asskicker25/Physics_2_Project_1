@@ -66,6 +66,12 @@
     <ClInclude Include="src\AppSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platforms\StaticPlatforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SoftBodyApplication.cpp">
@@ -108,6 +114,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Scene_One.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platforms\StaticPlatforms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
